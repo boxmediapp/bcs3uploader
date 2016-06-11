@@ -1,9 +1,8 @@
 bc_config_filepath="$HOME/.bcs3uploader/credeantials"
-
 if [ -f $bc_config_filepath ]; then
-	. $bc_config_filepath
+	. $bc_config_filepath	
 else    
-    mkdir ".bcs3uploader"	   
+    mkdir "$HOME/.bcs3uploader"	   
 fi
 
 
