@@ -15,11 +15,16 @@ inputvideo_extension="${inputvideo_filepath##*.}"
 inputvideo_basefilepath="${inputvideo_filepath%.*}"
 inputvideo_filename=${inputvideo_filepath##*/}
 inputvideo_filename_base="${inputvideo_filename%.*}"
-inputvideo_trimmedfilepath=$inputvideo_basefilepath'___trimmed.'$inputvideo_extension
 inputvideo_title=$inputvideo_filename_base
 timestamp=$(date +%s)
 bcuploader_logfile="/tmp/bcuploader_logfile.log"
 now=`date`
+
+inputvideo_trimmedfilepath="/tmp/$inputvideo_basefilepath_$timestamp.$inputvideo_extension"
+
+
+
+
 
 log(){
 	logContent=$1
@@ -38,6 +43,14 @@ initLog(){
   		echo "***********$now*************" > $bcuploader_logfile
     fi
 }
+initLog
+log "Input file: $inputvideo_filepath "
+log "Video title: $inputvideo_title "
+
+
+
+
+
 load_config(){
    . $bc_config_filepath
    log "loaded the config:account_id:$bc_account_id"
@@ -115,9 +128,6 @@ ingest_video(){
  fi    
 }
 
-initLog
-log "Input file: $inputvideo_filepath "
-log "Video title: $inputvideo_title "
 
 
 if [ -f $bc_config_filepath ]; then	
