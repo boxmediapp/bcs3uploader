@@ -8,7 +8,7 @@ bc_ingest_url=https://cms.api.brightcove.com/v1
 
 template_file_for_create_video="$scriptbasedir/template-create-video.json"
 template_file_for_ingest_video="$scriptbasedir/template-ingest-video.json"
-bc_config_filepath="$HOME/.bcs3uploader/credeantials"
+bc_config_filepath="$HOME/.bcs3uploader/credentials"
 
 inputvideo_filepath=$1
 inputvideo_extension="${inputvideo_filepath##*.}"
@@ -130,6 +130,7 @@ fi
 
 trimvideo
 s3uplad
+ingest_video
 
 
 

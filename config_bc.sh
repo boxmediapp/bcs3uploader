@@ -1,4 +1,4 @@
-bc_config_filepath="$HOME/.bcs3uploader/credeantials"
+bc_config_filepath="$HOME/.bcs3uploader/credentials"
 if [ -f $bc_config_filepath ]; then
 	. $bc_config_filepath	
 else    
