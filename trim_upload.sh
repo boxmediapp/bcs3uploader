@@ -2,10 +2,12 @@
 scriptbasedir=$(dirname "$0")
 
 bc_oauth_url=https://oauth.brightcove.com/v3
-bc_cmsurl=https://cms.api.brightcove.com/v1
+bc_cms_url=https://cms.api.brightcove.com/v1
+bc_ingest_url=https://cms.api.brightcove.com/v1
 
 
-template_file_for_create_video="$scriptbasedir/template-file-for-create-video.json"
+template_file_for_create_video="$scriptbasedir/template-create-video.json"
+template_file_for_ingest_video="$scriptbasedir/template-ingest-video.json"
 bc_config_filepath="$HOME/.bcs3uploader/credeantials"
 
 inputvideo_filepath=$1
@@ -23,7 +25,7 @@ log(){
 	logContent=$1
     echo $1 >> $bcuploader_logfile
 }
-intLog(){
+initLog(){
 	if [ -d /tmp ]; then
   		echo 
 	else
@@ -59,7 +61,7 @@ create_video_placeholder(){
     echo "$create_video_request_body" > $create_video_request_tmpfile
     log "create_video_request_body:$create_video_request_body"
                
-    create_video_command="curl  -X POST -H \"Authorization: Bearer $bc_access_token\"    -d @$create_video_request_tmpfile      $bc_cmsurl/accounts/$bc_account_id/videos"
+    create_video_command="curl  -X POST -H \"Authorization: Bearer $bc_access_token\"    -d @$create_video_request_tmpfile      $bc_cms_url/accounts/$bc_account_id/videos"
         
     log "create_video_command:$create_video_command"
         
@@ -71,6 +73,10 @@ create_video_placeholder(){
     
     log "bc_video_id:$bc_video_id"
 }
+
+
+
+
 trimvideo(){
    log "trmming video $inputvideo_filepath to $inputvideo_trimmedfilepath"
    ffmpeg -ss 10 -i $inputvideo_filepath $inputvideo_trimmedfilepath
@@ -80,7 +86,29 @@ s3uplad(){
    aws s3 cp $inputvideo_trimmedfilepath s3://box-video/$inputvideo_filename
 }
 
-intLog
+
+ingest_video(){
+    ingest_video_request_body=`cat $template_file_for_ingest_video`	
+	ingest_video_request_body=$(echo $ingest_video_request_body | sed "s/###video-file-name###/${inputvideo_filename}/g")    
+    ingest_video_request_tmpfile=$(mktemp /tmp/ingest-video-$inputvideo_filename_base.json)
+    
+    log "ingest request tmp file:$ingest_video_request_tmpfile"    
+    
+    echo "$ingest_video_request_body" > $ingest_video_request_tmpfile
+    
+    log "ingest_video_request_body:$ingest_video_request_body"
+               
+    ingest_video_command="curl  -X POST -H \"Authorization: Bearer $bc_access_token\"    -d @$create_video_request_tmpfile      $bc_ingest_url/accounts/$bc_account_id/videos/$bc_video_id/ingest-requests"
+        
+    log "ingest_video_command:$ingest_video_command"
+        
+    ingest_video_response_body=$(eval $ingest_video_command)
+    
+    log "ingest_video_response_body:$ingest_video_response_body"
+    echo $ingest_video_response_body    
+}
+
+initLog
 log "Input file: $inputvideo_filepath "
 log "Video title: $inputvideo_title "
 
