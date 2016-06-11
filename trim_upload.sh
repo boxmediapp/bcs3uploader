@@ -19,11 +19,7 @@ inputvideo_title=$inputvideo_filename_base
 timestamp=$(date +%s)
 bcuploader_logfile="/tmp/bcuploader_logfile.log"
 now=`date`
-
-inputvideo_trimmedfilepath="/tmp/$inputvideo_basefilepath_$timestamp.$inputvideo_extension"
-
-
-
+inputvideo_trimmedfilepath='/tmp/'$inputvideo_basefilepath'_'$timestamp'.'$inputvideo_extension
 
 
 log(){
@@ -44,17 +40,32 @@ initLog(){
     fi
 }
 initLog
-log "Input file: $inputvideo_filepath "
-log "Video title: $inputvideo_title "
 
-
-
+log "inputvideo_filepath:$inputvideo_filepath"
+log "inputvideo_extension:$inputvideo_extension"
+log "inputvideo_basefilepath:$inputvideo_basefilepath"
+log "inputvideo_filename:$inputvideo_filename"
+log "inputvideo_filename_base:$inputvideo_filename_base"
+log "inputvideo_title:$inputvideo_title"
+log "inputvideo_trimmedfilepath:$inputvideo_trimmedfilepath"
 
 
 load_config(){
    . $bc_config_filepath
    log "loaded the config:account_id:$bc_account_id"
 }
+
+
+getvideoproperties(){
+    video_property=$(ffprobe -i $inputvideo_filepath -show_format -v quiet)
+    log "video property:$video_property"    
+	bc_origin_video_duration=$(echo $video_property | sed 's/.*duration=//g' | sed 's/ .*//g' | sed 's/\..*//g')
+    log "original video duration in seconds:$bc_origin_video_duration"
+    bc_trimmed_video_duration=$((bc_origin_video_duration-20))
+    log "trimmed  video duration:$bc_trimmed_video_duration"       
+}
+
+
 
 request_token(){
     bc_token_request_post_body="grant_type=client_credentials"
@@ -68,7 +79,7 @@ request_token(){
 create_video_placeholder(){
     create_video_request_body=`cat $template_file_for_create_video`	
 	create_video_request_body=$(echo $create_video_request_body | sed "s/###ingest-video-title###/${inputvideo_title}/g")    
-    create_video_request_tmpfile=$(mktemp /tmp/create-video-$inputvideo_filename_base_$timestamp.json)
+    create_video_request_tmpfile=$(mktemp '/tmp/create-video-'$inputvideo_filename_base'_'$timestamp'.json')
     
     log "video request tmp file:$create_video_request_tmpfile"    
     
@@ -90,24 +101,35 @@ create_video_placeholder(){
 
 
 
-
 trimvideo(){
+if [ -f $inputvideo_filepath ]; then
    log "trmming video $inputvideo_filepath to $inputvideo_trimmedfilepath"
-   ffmpeg -ss 10 -i $inputvideo_filepath $inputvideo_trimmedfilepath
+   ffmpeg     -ss 10  -i $inputvideo_filepath  -t $bc_trimmed_video_duration -codec copy $inputvideo_trimmedfilepath 
+else
+   echo "file does not exist:$inputvideo_filepath"
+   log  "file does not exist:$inputvideo_filepath"
+fi
 }
 s3uplad(){
+if [ -f $inputvideo_trimmedfilepath ]; then
    log "Uploading the video to s3://box-video/$inputvideo_filename"
    aws s3 cp $inputvideo_trimmedfilepath s3://box-video/$inputvideo_filename
+else
+   echo "file does not exist:$inputvideo_trimmedfilepath"
+   log  "file does not exist:$inputvideo_trimmedfilepath"
+fi
+   
 }
 
 
 ingest_video(){
+if [ -f $inputvideo_trimmedfilepath ]; then
  if [ "$bc_access_token" == "" ]; then 
     echo "Skipping ingesting into brightcove"
  else   
     ingest_video_request_body=`cat $template_file_for_ingest_video`	    
 	ingest_video_request_body=$(echo $ingest_video_request_body | sed "s/###video-file-name###/${inputvideo_filename}/g")    
-    ingest_video_request_tmpfile=$(mktemp /tmp/ingest-video-$inputvideo_filename_base-$timestamp.json)
+    ingest_video_request_tmpfile=$(mktemp '/tmp/ingest-video-'$inputvideo_filename_base'-'$timestamp'.json')
     
     log "ingest request tmp file:$ingest_video_request_tmpfile"    
     
@@ -125,7 +147,11 @@ ingest_video(){
     log "ingest_video_response_body:$ingest_video_response_body"
     
     echo $ingest_video_response_body
- fi    
+ fi  
+ else
+ echo "skipping the ingest because the source file does not exist:$inputvideo_trimmedfilepath"
+ log "skipping the ingest because the source file does not exist:$inputvideo_trimmedfilepath"
+ fi  
 }
 
 
@@ -145,6 +171,7 @@ else
     log "The brightcove configuration is not found, skipping brightcove process"
 fi
 
+getvideoproperties
 trimvideo
 s3uplad
 ingest_video
