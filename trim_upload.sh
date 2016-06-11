@@ -40,6 +40,7 @@ initLog(){
 }
 load_config(){
    . $bc_config_filepath
+   log "loaded the config:account_id:$bc_account_id"
 }
 
 request_token(){
@@ -54,7 +55,7 @@ request_token(){
 create_video_placeholder(){
     create_video_request_body=`cat $template_file_for_create_video`	
 	create_video_request_body=$(echo $create_video_request_body | sed "s/###ingest-video-title###/${inputvideo_title}/g")    
-    create_video_request_tmpfile=$(mktemp /tmp/create-video-$inputvideo_filename_base.json)
+    create_video_request_tmpfile=$(mktemp /tmp/create-video-$inputvideo_filename_base_$timestamp.json)
     
     log "video request tmp file:$create_video_request_tmpfile"    
     
@@ -88,24 +89,30 @@ s3uplad(){
 
 
 ingest_video(){
-    ingest_video_request_body=`cat $template_file_for_ingest_video`	
+ if [ "$bc_access_token" == "" ]; then 
+    echo "Skipping ingesting into brightcove"
+ else   
+    ingest_video_request_body=`cat $template_file_for_ingest_video`	    
 	ingest_video_request_body=$(echo $ingest_video_request_body | sed "s/###video-file-name###/${inputvideo_filename}/g")    
-    ingest_video_request_tmpfile=$(mktemp /tmp/ingest-video-$inputvideo_filename_base.json)
+    ingest_video_request_tmpfile=$(mktemp /tmp/ingest-video-$inputvideo_filename_base-$timestamp.json)
     
     log "ingest request tmp file:$ingest_video_request_tmpfile"    
     
     echo "$ingest_video_request_body" > $ingest_video_request_tmpfile
     
+    
     log "ingest_video_request_body:$ingest_video_request_body"
-               
-    ingest_video_command="curl  -X POST -H \"Authorization: Bearer $bc_access_token\"    -d @$create_video_request_tmpfile      $bc_ingest_url/accounts/$bc_account_id/videos/$bc_video_id/ingest-requests"
+    echo "ingest:::::$ingest_video_request_tmpfile"           
+    ingest_video_command="curl  -X POST -H \"Authorization: Bearer $bc_access_token\"    -d @$ingest_video_request_tmpfile      $bc_ingest_url/accounts/$bc_account_id/videos/$bc_video_id/ingest-requests"
         
     log "ingest_video_command:$ingest_video_command"
-        
-    ingest_video_response_body=$(eval $ingest_video_command)
+    echo $ingest_video_command    
+    ingest_video_response_body=$(eval $ingest_video_command)        
     
     log "ingest_video_response_body:$ingest_video_response_body"
-    echo $ingest_video_response_body    
+    
+    echo $ingest_video_response_body
+ fi    
 }
 
 initLog
