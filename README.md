@@ -25,4 +25,14 @@ This script uses the FFmpeg utilities to trim the video, so you need to download
 
 Then, you can can download this script:
 
+    git clone https://github.com/dhewzulla/bcs3uploader.git
+    
+
+then run the configuration script:
+     bcs3uploader/config_bc.sh
+     
+    
+   
+   
+
 
