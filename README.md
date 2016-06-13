@@ -29,9 +29,18 @@ Then, you can can download this script:
     
 
 then run the configuration script:
+
      bcs3uploader/config_bc.sh
-     
+   
+this will ask account id, key and secrets that are going to be used to interact with the video cloud.
+
+Then finally, you can run the script to upload the video to the brightcove video cloud:
+
+    bcs3uploader/trim_upload.sh  <video file path>
     
+
+
+
    
    
 
