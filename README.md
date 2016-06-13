@@ -2,12 +2,13 @@
 
 This script is for uploading videos to the Brightcove Video Cloud (https://signin.brightcove.com).
 
-It does the following:
-   (1) Create a place holder in the brightcove video cloud
-   (1) Trim 10 seconds from the beginning of the video(remove the clock)
-   (2) Trim 10 seconds from the end of the the video
-   (3) Upload the video to the s3 bucket
-   (4) Initiates the Brightcove ingest process to ingest the video in the s3 bucket.
+It does the following: 
+
+  - Create a place holder in the brightcove video cloud <br>
+  - Trim 10 seconds from the beginning of the video(remove the clock)<br>
+  - Trim 10 seconds from the end of the the video <br>
+  - Upload the video to the s3 bucket <br>
+  - Initiates the Brightcove ingest process to ingest the video in the s3 bucket. <br>
    
 This scripts uses the AWS Command Line Interface to upload the video to the S3 bucket, so you need to install it from the following link:
 
@@ -37,7 +38,7 @@ this will ask account id, key and secrets that are going to be used to interact 
 Then finally, you can run the script to upload the video to the brightcove video cloud:
 
     bcs3uploader/trim_upload.sh  <video file path>
-    
+
 
 
 
