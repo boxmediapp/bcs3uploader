@@ -41,7 +41,7 @@ Then finally, you can run the script to upload the video to the brightcove video
     bcs3uploader/trim_upload.sh  <video file path>
 
 
-If you would like to specify the metadata for the video, you can edit the "template-create-video.json"
+If you would like to change/add the metadata for the video to be uploaded, you can edit the "template-create-video.json"
 
 
    
