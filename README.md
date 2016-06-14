@@ -43,7 +43,7 @@ Then finally, you can run the script to upload the video to the brightcove video
 
 If you would like to change/add the metadata for the video to be uploaded, you can edit the "template-create-video.json"
 
-
+Note that I am re-implementing the functionalities in python script as well but it is not yet completed. 
    
    
 
