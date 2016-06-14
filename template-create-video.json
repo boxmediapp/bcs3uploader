@@ -1,3 +1,7 @@
 {
-    "name": "###ingest-video-title###"
+    "name": "###ingest-video-title###",
+    "custom_fields" : { },
+    "description" : null,
+    "economics":"AD_SUPPORTED",
+    "state" : "INACTIVE"
 }
