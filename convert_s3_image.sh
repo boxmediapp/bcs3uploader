@@ -19,7 +19,7 @@ convert(){
 
 width=$1
 height=$2
-
+echo " downloadd the file:$filename"
 
 destfilename=$base_filename'_'$width'x'$height'.'$file_extension
 
