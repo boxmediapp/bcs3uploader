@@ -12,8 +12,10 @@ base_filename="${filename%.*}"
 
 
 cd /data
-echo "executing: aws s3 cp s3://$bucketname/$filepath  $filename"
+echo "executing::aws s3 cp s3://$bucketname/$filepath  $filename"
+
 aws s3 cp s3://$bucketname/$filepath  $filename
+
 
 convert(){
 
