@@ -12,14 +12,14 @@ base_filename="${filename%.*}"
 
 
 cd /data
-
+echo "executing: aws s3 cp s3://$bucketname/$filepath  $filename"
 aws s3 cp s3://$bucketname/$filepath  $filename
 
 convert(){
 
 width=$1
 height=$2
-echo " downloadd the file:$filename"
+
 
 destfilename=$base_filename'_'$width'x'$height'.'$file_extension
 
