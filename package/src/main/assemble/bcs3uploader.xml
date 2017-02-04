@@ -17,9 +17,12 @@
            </fileSet>
            
            <fileSet>
-                   <directory>/</directory>
+                   <directory>../</directory>
                    <includes>
-                       <include>*.*</include>
+                       <include>*.sh</include>
+                       <include>*.py</include>
+                       <include>*.md</include>
+                       <include>*.json</include>
                    </includes>
                    <outputDirectory>/</outputDirectory>
            </fileSet>
