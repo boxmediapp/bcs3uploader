@@ -1,0 +1,8 @@
+source deploy/util.sh
+getProjectVersionFromPom
+buildVariables
+createBcs3uploaderDirectoryOnServer
+uploadZipFile
+unzipZipFile
+
+
