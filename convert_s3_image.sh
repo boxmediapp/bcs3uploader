@@ -36,9 +36,11 @@ rm $destfilename
 }
 
 
+convert 320 180
+convert 1920 1080
 convert 288 162
 convert 256 144
-convert 320 180
+
 convert 400 225
 convert 432 243
 convert 512 288
@@ -48,7 +50,7 @@ convert 824 426
 convert 1089 563
 convert 1160 508
 convert 1280 720
-convert 1920 1080
+
 
 rm $filename
 

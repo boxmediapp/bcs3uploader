@@ -38,4 +38,11 @@ unzipZipFile(){
      executeScriptOnServer /tmp/script_$uniqueidforfilename.sh
 }
 
+makeSchellScriptExecutable(){
+    uniqueidforfilename=$(date +%s)
+    echo "creating the script for making executable: /tmp/script_$uniqueidforfilename.sh"       
+    echo "chmod u+x bcs3uploader/*.sh" > /tmp/script_$uniqueidforfilename.sh
+    executeScriptOnServer /tmp/script_$uniqueidforfilename.sh
+}
+
   

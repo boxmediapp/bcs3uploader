@@ -4,5 +4,6 @@ buildVariables
 createBcs3uploaderDirectoryOnServer
 uploadZipFile
 unzipZipFile
+makeSchellScriptExecutable
 
 
